@@ -71,7 +71,7 @@ async fn list_snapshots(
                     Some(end_time) => {
                         let snapshots = snapshot::Entity::find()
                             .filter(snapshot::Column::UserId.eq(user.uid))
-                            .filter(snapshot::Column::Timestamp.between(start_time,end_time))
+                            .filter(snapshot::Column::Timestamp.between(start_time, end_time))
                             .order_by_desc(snapshot::Column::Timestamp)
                             .paginate(db, filter.per_page);
                         // frontend page start from 1,but sea_orm page start from 0 , so use page-1 here

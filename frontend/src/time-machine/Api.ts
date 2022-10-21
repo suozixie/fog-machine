@@ -272,22 +272,18 @@ export default class Api {
   public static async listSnapshots(
     page: number,
     perPage: number,
-    startTime: string|null,
-    endTime:string|null,
+    startTime: string | null,
+    endTime: string | null
   ): Promise<Result<Snapshot>> {
     let url = "snapshot?page=" + String(page) + "&per_page=" + String(perPage);
     if (startTime) {
       console.log(startTime);
-      url = url + "&start_time=" +startTime;
+      url = url + "&start_time=" + startTime;
     }
     if (endTime) {
-      url = url + "&end_time=" +endTime;
+      url = url + "&end_time=" + endTime;
     }
-    const result = await this.requestApi(
-      url,
-      "get",
-      true
-    );
+    const result = await this.requestApi(url, "get", true);
     if (result.ok) {
       result.ok = toCamel(result.ok);
     }

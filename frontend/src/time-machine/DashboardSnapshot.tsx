@@ -32,8 +32,8 @@ function DashboardSnapshot() {
   type SnapshotsFliterState = {
     nowPage: number;
     perPage: number;
-    startTime: string|null;
-    endTime:string|null;
+    startTime: string | null;
+    endTime: string | null;
   };
   const [snapshots, setSnapshots] = useState<Snapshot | null>(null);
   const [activePage, setActivePage] = useState<SnapshotsFliterState>({
@@ -51,7 +51,7 @@ function DashboardSnapshot() {
       activePage.nowPage,
       activePage.perPage,
       activePage.startTime,
-      activePage.endTime,
+      activePage.endTime
     );
     console.log(result.ok);
     if (result.ok) {
@@ -216,7 +216,7 @@ function DashboardSnapshot() {
           </Table>
           <hr />
           <Pagination
-            layout={["total", "-", "limit", "|", "pager", "skip"]}
+            layout={["total", "-", "|", "pager", "skip"]}
             size={"sm"}
             prev={true}
             next={true}
@@ -225,8 +225,6 @@ function DashboardSnapshot() {
             ellipsis={true}
             boundaryLinks={true}
             total={snapshots.total}
-            limit={activePage.perPage}
-            limitOptions={[5, 10, 20, 50, 100]}
             maxButtons={5}
             activePage={activePage.nowPage}
             onChangePage={(page) => {
@@ -234,20 +232,6 @@ function DashboardSnapshot() {
                 ...activePage,
                 nowPage: page,
               });
-            }}
-            onChangeLimit={(limit) => {
-              if (limit >= snapshots.total) {
-                setActivePage({
-                  ...activePage,
-                  nowPage: 1,
-                  perPage: limit,
-                });
-              } else {
-                setActivePage({
-                  ...activePage,
-                  perPage: limit,
-                });
-              }
             }}
           />
         </div>
@@ -273,41 +257,37 @@ function DashboardSnapshot() {
           <Stack justifyContent="space-between">
             <span>Snapshots</span>
             <div>
-            <DateRangePicker 
-            placeholder="Filter by date"
-            onChange={
-              (dateRange) => {
-                if (dateRange) {
-                dateRange[0].setHours(0,0,0);
-                dateRange[1].setHours(23.59,59);
-                setActivePage({
-                  ...activePage,
-                  startTime: dateRange[0].toISOString(),
-                  endTime: dateRange[1].toISOString(),
+              <DateRangePicker
+                placeholder="Filter by date"
+                onChange={(dateRange) => {
+                  if (dateRange) {
+                    dateRange[0].setHours(0, 0, 0);
+                    dateRange[1].setHours(23, 59, 59);
+                    setActivePage({
+                      ...activePage,
+                      startTime: dateRange[0].toISOString(),
+                      endTime: dateRange[1].toISOString(),
+                    });
+                  } else {
+                    setActivePage({
+                      ...activePage,
+                      startTime: null,
+                      endTime: null,
+                    });
                   }
-                )
-              } else {
-                setActivePage({
-                  ...activePage,
-                  startTime: null,
-                  endTime: null,
-                  }
-                )
-              }
-              }
-            }
-            />
-            <IconButton
-              icon={<PlusIcon />}
-              onClick={() => {
-                setUploadDialogState({
-                  uploadDate: null,
-                  uploadState: "empty",
-                });
-              }}
-            >
-              upload
-            </IconButton>
+                }}
+              />
+              <IconButton
+                icon={<PlusIcon />}
+                onClick={() => {
+                  setUploadDialogState({
+                    uploadDate: null,
+                    uploadState: "empty",
+                  });
+                }}
+              >
+                upload
+              </IconButton>
             </div>
           </Stack>
         }
