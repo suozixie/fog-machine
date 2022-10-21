@@ -51,13 +51,13 @@ async fn list_snapshots(
         per_page: per_page.unwrap_or(0),
         page: page.unwrap_or(1),
         start_time: match DateTime::parse_from_rfc3339(
-            &start_time.unwrap_or("0001-01-01T00:00:00Z".to_string()),
+            &start_time.unwrap_or_else(|| "0001-01-01T00:00:00Z".to_string()),
         ) {
             Ok(dt) => Some(dt.with_timezone(&Utc)),
             Err(_) => None,
         },
         end_time: match DateTime::parse_from_rfc3339(
-            &end_time.unwrap_or("9999-12-31T12:59:59Z".to_string()),
+            &end_time.unwrap_or_else(|| "9999-12-31T12:59:59Z".to_string()),
         ) {
             Ok(dt) => Some(dt.with_timezone(&Utc)),
             Err(_) => None,

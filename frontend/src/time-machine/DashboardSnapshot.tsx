@@ -226,6 +226,7 @@ function DashboardSnapshot() {
             boundaryLinks={true}
             total={snapshots.total}
             maxButtons={5}
+            limit={10}
             activePage={activePage.nowPage}
             onChangePage={(page) => {
               setActivePage({
