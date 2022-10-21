@@ -19,6 +19,7 @@ import {
   Uploader,
   Form,
   IconButton,
+  DateRangePicker,
 } from "rsuite";
 import MoreIcon from "@rsuite/icons/legacy/More";
 import Api, { Snapshot, SnapshotContent } from "./Api";
@@ -31,11 +32,15 @@ function DashboardSnapshot() {
   type SnapshotsFliterState = {
     nowPage: number;
     perPage: number;
+    startTime: string|null;
+    endTime:string|null;
   };
   const [snapshots, setSnapshots] = useState<Snapshot | null>(null);
   const [activePage, setActivePage] = useState<SnapshotsFliterState>({
     nowPage: 1,
     perPage: 10,
+    startTime: null,
+    endTime: null,
   });
 
   const [isLoading, setIsLoading] = useState(false);
@@ -44,7 +49,9 @@ function DashboardSnapshot() {
     setIsLoading(true);
     const result = await Api.listSnapshots(
       activePage.nowPage,
-      activePage.perPage
+      activePage.perPage,
+      activePage.startTime,
+      activePage.endTime,
     );
     console.log(result.ok);
     if (result.ok) {
@@ -231,6 +238,7 @@ function DashboardSnapshot() {
             onChangeLimit={(limit) => {
               if (limit >= snapshots.total) {
                 setActivePage({
+                  ...activePage,
                   nowPage: 1,
                   perPage: limit,
                 });
@@ -264,6 +272,31 @@ function DashboardSnapshot() {
         header={
           <Stack justifyContent="space-between">
             <span>Snapshots</span>
+            <div>
+            <DateRangePicker 
+            placeholder="Filter by date"
+            onChange={
+              (dateRange) => {
+                if (dateRange) {
+                dateRange[0].setHours(0,0,0);
+                dateRange[1].setHours(23.59,59);
+                setActivePage({
+                  ...activePage,
+                  startTime: dateRange[0].toISOString(),
+                  endTime: dateRange[1].toISOString(),
+                  }
+                )
+              } else {
+                setActivePage({
+                  ...activePage,
+                  startTime: null,
+                  endTime: null,
+                  }
+                )
+              }
+              }
+            }
+            />
             <IconButton
               icon={<PlusIcon />}
               onClick={() => {
@@ -275,6 +308,7 @@ function DashboardSnapshot() {
             >
               upload
             </IconButton>
+            </div>
           </Stack>
         }
       >

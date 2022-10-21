@@ -29,14 +29,18 @@ struct SnapshotJson {
 struct SnapshotFilter {
     pub page: usize,
     pub per_page: usize,
+    pub start_time: Option<DateTime<Utc>>,
+    pub end_time: Option<DateTime<Utc>>,
 }
 // TODO: pagination looks not good,but it works.
-#[get("/?<page>&<per_page>")]
+#[get("/?<page>&<per_page>&<start_time>&<end_time>")]
 async fn list_snapshots(
     conn: Connection<'_, Db>,
     user: User,
     page: Option<usize>,
     per_page: Option<usize>,
+    start_time: Option<String>,
+    end_time: Option<String>,
 ) -> APIResponse {
     let db = conn.into_inner();
 
@@ -46,22 +50,52 @@ async fn list_snapshots(
     let filter = SnapshotFilter {
         per_page: per_page.unwrap_or(0),
         page: page.unwrap_or(1),
+        start_time: match DateTime::parse_from_rfc3339(
+            &start_time.unwrap_or("0001-01-01T00:00:00Z".to_string()),
+        ) {
+            Ok(dt) => Some(dt.with_timezone(&Utc)),
+            Err(_) => None,
+        },
+        end_time: match DateTime::parse_from_rfc3339(
+            &end_time.unwrap_or("9999-12-31T12:59:59Z".to_string()),
+        ) {
+            Ok(dt) => Some(dt.with_timezone(&Utc)),
+            Err(_) => None,
+        },
     };
 
     if filter.per_page != 0 {
-        let snapshots = snapshot::Entity::find()
-            .filter(snapshot::Column::UserId.eq(user.uid))
-            .order_by_desc(snapshot::Column::Timestamp)
-            .paginate(db, filter.per_page);
-        // frontend page start from 1,but sea_orm page start from 0 , so use page-1 here
-        snapshot_list_p = snapshots.fetch_page(filter.page - 1).await?;
-        total = match snapshots.num_items_and_pages().await {
-            Ok(num) => num,
-            Err(_) => ItemsAndPagesNumber {
-                number_of_items: 0,
-                number_of_pages: 0,
-            },
-        };
+        match filter.start_time {
+            Some(start_time) => {
+                match filter.end_time {
+                    Some(end_time) => {
+                        let snapshots = snapshot::Entity::find()
+                            .filter(snapshot::Column::UserId.eq(user.uid))
+                            .filter(snapshot::Column::Timestamp.between(start_time,end_time))
+                            .order_by_desc(snapshot::Column::Timestamp)
+                            .paginate(db, filter.per_page);
+                        // frontend page start from 1,but sea_orm page start from 0 , so use page-1 here
+                        snapshot_list_p = snapshots.fetch_page(filter.page - 1).await?;
+                        total = match snapshots.num_items_and_pages().await {
+                            Ok(num) => num,
+                            Err(_) => ItemsAndPagesNumber {
+                                number_of_items: 0,
+                                number_of_pages: 0,
+                            },
+                        };
+                    }
+                    None => {
+                        return Ok((Status::BadRequest, json!({"error": "end_time_parse_error"})))
+                    }
+                }
+            }
+            None => {
+                return Ok((
+                    Status::BadRequest,
+                    json!({"error": "start_time_parse_error"}),
+                ))
+            }
+        }
     } else {
         snapshot_list_p = snapshot::Entity::find()
             .filter(snapshot::Column::UserId.eq(user.uid))
