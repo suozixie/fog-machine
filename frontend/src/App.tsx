@@ -40,7 +40,10 @@ function App() {
             <Home isDarkTheme={isDarkTheme} setIsDarkTheme={setIsDarkTheme} />
           }
         />
-        <Route path="/time-machine" element={<TimeMachineHome />} />
+        <Route
+          path="/time-machine"
+          element={<TimeMachineHome isOnlyUseLogin={false} />}
+        />
         <Route path="/contrast" element={<Contrast />} />
         <Route path="/help" element={<HelpHome />} />
         {/* github sso */}

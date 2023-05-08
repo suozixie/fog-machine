@@ -12,7 +12,7 @@ import {
 } from "rsuite";
 import EditIcon from "@rsuite/icons/Edit";
 import HistoryIcon from "@rsuite/icons/History";
-import DragableIcon from '@rsuite/icons/Dragable';
+import DragableIcon from "@rsuite/icons/Dragable";
 import { IconProps } from "@rsuite/icons/lib/Icon";
 import { Icon } from "@rsuite/icons";
 import { useTranslation } from "react-i18next";

@@ -1,52 +1,51 @@
 .contrast-content {
-    display: grid;
-    grid-template-columns: calc(50% - 30px) 30px calc(50% - 30px);
-    grid-column-gap: 20px;
-  }
-  .contrast-buttons {
-    margin-top: 40px;
-    width: 40%;
-    margin-left: 30%;
-    margin-right: 30%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  
-  .contrast-content > .contrast__icon {
-    font-size: 30px;
-    width: 30px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  
-  .file-box {
-    height: 500px;
-  }
-  
-  .file-box-content {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    height: calc(60% - 12px);
-  }
-  .file-box-content > .file-box-content__map {
-    width: 108px;
-  }
-  .file-box-content > .file-box-content-name > :first-child {
-    font-weight: bold;
-    margin-right: 8px;
-  }
-  .file-box-buttons {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    height: calc(35% - 12px);
-  }
-  .file-box-buttons > span {
-    margin: 12px 0;
-  }
-  
+  display: grid;
+  grid-template-columns: calc(50% - 30px) 30px calc(50% - 30px);
+  grid-column-gap: 20px;
+}
+.contrast-buttons {
+  margin-top: 40px;
+  width: 40%;
+  margin-left: 30%;
+  margin-right: 30%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.contrast-content > .contrast__icon {
+  font-size: 30px;
+  width: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.file-box {
+  height: 500px;
+}
+
+.file-box-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  height: calc(60% - 12px);
+}
+.file-box-content > .file-box-content__map {
+  width: 108px;
+}
+.file-box-content > .file-box-content-name > :first-child {
+  font-weight: bold;
+  margin-right: 8px;
+}
+.file-box-buttons {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  height: calc(35% - 12px);
+}
+.file-box-buttons > span {
+  margin: 12px 0;
+}

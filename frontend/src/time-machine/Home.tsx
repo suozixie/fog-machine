@@ -30,7 +30,7 @@ type RegistrationState = {
 
 let initingLoginStatus = false;
 
-function Home() {
+function Home(props: { isOnlyUseLogin: boolean }) {
   const [loginStatus, setLoginStatus] = useState<LoginStatus | null>(null);
 
   const [registrationState, setRegistrationState] =
@@ -198,8 +198,13 @@ function Home() {
 
   const navigate = useNavigate();
   const { t } = useTranslation();
-
-  return (
+  return props.isOnlyUseLogin ? (
+    <Container>
+      <Content>
+        <RenderContent />
+      </Content>
+    </Container>
+  ) : (
     <Container>
       <Content>
         <div className="time-machine-body">

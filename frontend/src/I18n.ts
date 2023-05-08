@@ -33,7 +33,8 @@ i18n
             "A service for snapshotting and preserving history of Fog of World data",
           "home-help-title": "Help",
           "home-contrast-title": "Contrast (beta)",
-          "home-contrast-desc": "A Comparison Tool for Fog of World data, To see the differences between two snapshots.",
+          "home-contrast-desc":
+            "A Comparison Tool for Fog of World data, To see the differences between two snapshots.",
           "home-theme-dark": "Dark",
           "home-theme-light": "Light",
           "add-data-source": "Add data source",
@@ -112,7 +113,8 @@ i18n
           "home-time-machine-desc": "世界迷雾数据快照及历史数据管理服务。",
           "home-help-title": "帮助",
           "home-contrast-title": "快照对比 (beta)",
-          "home-contrast-desc": "世界迷雾快照比对工具，看看两个快照之间的差异。",
+          "home-contrast-desc":
+            "世界迷雾快照比对工具，看看两个快照之间的差异。",
           "home-theme-dark": "夜间模式",
           "home-theme-light": "日间模式",
           "add-data-source": "添加数据源",

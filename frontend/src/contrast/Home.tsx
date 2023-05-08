@@ -14,13 +14,16 @@ import ConversionIcon from "@rsuite/icons/Conversion";
 import PlusIcon from "@rsuite/icons/Plus";
 import emptyIcon from "./empty.png";
 import mapIcon from "./map.svg";
+import TimeMachineHome from "../time-machine/Home";
 
 import "./Home.css";
 import { FC, useEffect, useState } from "react";
 import Api, { Snapshot } from "../time-machine/Api";
 import moment from "moment";
 
-const Contrast = () => {
+let initingLoginStatus = false;
+function Contrast() {
+  const [loginStatus, setLoginStatus] = useState<boolean>(false);
   const navigate = useNavigate();
   const { t } = useTranslation();
   const [snapshotOptions, setSnapshotOptions] = useState<
@@ -31,7 +34,27 @@ const Contrast = () => {
   const [snapshotList, setSnapshotList] = useState<Snapshot[]>([]);
   const currentPage = 1;
 
-  const [isLoading, setIsLoading] = useState(true);
+  //const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const initLoginStatus = async () => {
+      const userInfo = await Api.getUserInfo();
+      if (userInfo) {
+        setLoginStatus(true);
+      } else {
+        setLoginStatus(false);
+      }
+    };
+    if (!loginStatus) {
+      if (!initingLoginStatus) {
+        initingLoginStatus = true;
+        setLoginStatus(false);
+        initLoginStatus().finally(() => {
+          initingLoginStatus = false;
+        });
+      }
+    }
+  }, [loginStatus]);
 
   const FileBox: FC<{
     snapshotId: number | null;
@@ -101,34 +124,37 @@ const Contrast = () => {
     console.log(leftSnapshotId, rightSnapshotId);
     window.location.href = `http://127.0.0.1:3001/?contrast-snapshot=${leftSnapshotId},${rightSnapshotId}`;
   };
-  const RenderContent = () => (
-    <div className="contrast">
-      <div className="contrast-content">
-        <FileBox
-          snapshotId={leftSnapshotId}
-          setSnapshotId={setLeftSnapshotId}
-        />
-        <div className="contrast__icon">
-          <ConversionIcon />
+  const RenderContent = () =>
+    loginStatus ? (
+      <div className="contrast">
+        <div className="contrast-content">
+          <FileBox
+            snapshotId={leftSnapshotId}
+            setSnapshotId={setLeftSnapshotId}
+          />
+          <div className="contrast__icon">
+            <ConversionIcon />
+          </div>
+          <FileBox
+            snapshotId={rightSnapshotId}
+            setSnapshotId={setRightSnapshotd}
+          />
         </div>
-        <FileBox
-          snapshotId={rightSnapshotId}
-          setSnapshotId={setRightSnapshotd}
-        />
+        {leftSnapshotId && rightSnapshotId ? (
+          <div className="contrast-buttons">
+            <Button appearance="primary" block onClick={() => contrast()}>
+              Contrast
+            </Button>
+          </div>
+        ) : null}
       </div>
-      {leftSnapshotId && rightSnapshotId ? (
-        <div className="contrast-buttons">
-          <Button appearance="primary" block onClick={() => contrast()}>
-            Contrast
-          </Button>
-        </div>
-      ) : null}
-    </div>
-  );
+    ) : (
+      <TimeMachineHome isOnlyUseLogin={true} />
+    );
 
   useEffect(() => {
     const loadData = async () => {
-      setIsLoading(true);
+      // setIsLoading(true);
       const result = await Api.listSnapshots(currentPage, 100);
       if (result.ok) {
         const { snapshots = [] } = result.ok;
@@ -155,7 +181,7 @@ const Contrast = () => {
       } else {
         console.log(result);
       }
-      setIsLoading(false);
+      // setIsLoading(false);
     };
     loadData();
   }, [currentPage, t]);
@@ -185,5 +211,5 @@ const Contrast = () => {
       </Content>
     </Container>
   );
-};
+}
 export default Contrast;
