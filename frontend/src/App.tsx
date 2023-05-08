@@ -9,6 +9,7 @@ import { useTranslation } from "react-i18next";
 import HelpHome from "./help/Home";
 import { useState, useEffect } from "react";
 import Error404 from "./ErrorPage/Error404";
+import Contrast from "./contrast/Home";
 
 function GithubSsoRedirect() {
   const [searchParams, _] = useSearchParams();
@@ -40,6 +41,7 @@ function App() {
           }
         />
         <Route path="/time-machine" element={<TimeMachineHome />} />
+        <Route path="/contrast" element={<Contrast />} />
         <Route path="/help" element={<HelpHome />} />
         {/* github sso */}
         <Route path="/callback/github" element={<GithubSsoRedirect />} />

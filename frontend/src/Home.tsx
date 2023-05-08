@@ -117,6 +117,14 @@ function Home(props: {
               navigate("/time-machine", { replace: false });
             }
           )}
+          {Item(
+            t("home-contrast-title"),
+            HistoryIcon,
+            t("home-contrast-desc"),
+            () => {
+              navigate("/contrast", { replace: false });
+            }
+          )}
         </div>
       </Content>
     </Container>
