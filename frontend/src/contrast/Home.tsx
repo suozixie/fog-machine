@@ -23,7 +23,9 @@ import moment from "moment";
 
 let initingLoginStatus = false;
 function Contrast() {
-  const [loginStatus, setLoginStatus] = useState<boolean>(false);
+  const [loginStatus, setLoginStatus] = useState<
+    "loggedIn" | "unLoggedIn" | "openLogin"
+  >("unLoggedIn");
   const navigate = useNavigate();
   const { t } = useTranslation();
   const [snapshotOptions, setSnapshotOptions] = useState<
@@ -34,21 +36,21 @@ function Contrast() {
   const [snapshotList, setSnapshotList] = useState<Snapshot[]>([]);
   const currentPage = 1;
 
-  //const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const initLoginStatus = async () => {
       const userInfo = await Api.getUserInfo();
       if (userInfo) {
-        setLoginStatus(true);
+        setLoginStatus("loggedIn");
       } else {
-        setLoginStatus(false);
+        setLoginStatus("unLoggedIn");
       }
     };
-    if (!loginStatus) {
+    if (loginStatus != "loggedIn" && loginStatus != "openLogin") {
       if (!initingLoginStatus) {
         initingLoginStatus = true;
-        setLoginStatus(false);
+        setLoginStatus("unLoggedIn");
         initLoginStatus().finally(() => {
           initingLoginStatus = false;
         });
@@ -92,7 +94,7 @@ function Contrast() {
             ) : (
               <>
                 <img src={emptyIcon} alt="empty_icon" />
-                <span>No More Snapshots</span>
+                <span>{t("contrast-no-more-snapshots")}</span>
               </>
             )}
           </div>
@@ -107,13 +109,23 @@ function Contrast() {
               {t("snapshot-list-upload")}
             </IconButton>
             <span>Or</span>
-            <SelectPicker
-              data={snapshotOptions}
-              value={snapshotId}
-              onChange={(value) => setSnapshotId(value)}
-              style={{ width: 224 }}
-              // loading={isLoading}
-            />
+            {loginStatus == "loggedIn" ? (
+              <SelectPicker
+                data={snapshotOptions}
+                value={snapshotId}
+                onChange={(value) => setSnapshotId(value)}
+                style={{ width: 224 }}
+                loading={isLoading}
+              />
+            ) : (
+              <Button
+                onClick={() => {
+                  setLoginStatus("openLogin");
+                }}
+              >
+                {t("contrast-login")}
+              </Button>
+            )}
           </div>
         </div>
       </Panel>
@@ -124,37 +136,34 @@ function Contrast() {
     console.log(leftSnapshotId, rightSnapshotId);
     window.location.href = `http://127.0.0.1:3001/?contrast-snapshot=${leftSnapshotId},${rightSnapshotId}`;
   };
-  const RenderContent = () =>
-    loginStatus ? (
-      <div className="contrast">
-        <div className="contrast-content">
-          <FileBox
-            snapshotId={leftSnapshotId}
-            setSnapshotId={setLeftSnapshotId}
-          />
-          <div className="contrast__icon">
-            <ConversionIcon />
-          </div>
-          <FileBox
-            snapshotId={rightSnapshotId}
-            setSnapshotId={setRightSnapshotd}
-          />
+  const RenderContent = () => (
+    <div className="contrast">
+      <div className="contrast-content">
+        <FileBox
+          snapshotId={leftSnapshotId}
+          setSnapshotId={setLeftSnapshotId}
+        />
+        <div className="contrast__icon">
+          <ConversionIcon />
         </div>
-        {leftSnapshotId && rightSnapshotId ? (
-          <div className="contrast-buttons">
-            <Button appearance="primary" block onClick={() => contrast()}>
-              Contrast
-            </Button>
-          </div>
-        ) : null}
+        <FileBox
+          snapshotId={rightSnapshotId}
+          setSnapshotId={setRightSnapshotd}
+        />
       </div>
-    ) : (
-      <TimeMachineHome isOnlyUseLogin={true} />
-    );
+      {leftSnapshotId && rightSnapshotId ? (
+        <div className="contrast-buttons">
+          <Button appearance="primary" block onClick={() => contrast()}>
+            Contrast
+          </Button>
+        </div>
+      ) : null}
+    </div>
+  );
 
   useEffect(() => {
     const loadData = async () => {
-      // setIsLoading(true);
+      setIsLoading(true);
       const result = await Api.listSnapshots(currentPage, 100);
       if (result.ok) {
         const { snapshots = [] } = result.ok;
@@ -181,7 +190,7 @@ function Contrast() {
       } else {
         console.log(result);
       }
-      // setIsLoading(false);
+      setIsLoading(false);
     };
     loadData();
   }, [currentPage, t]);
@@ -205,8 +214,11 @@ function Contrast() {
           </Breadcrumb>
 
           <Divider style={{ marginTop: "1vh" }} />
-
-          <RenderContent />
+          {loginStatus == "openLogin" ? (
+            <TimeMachineHome isOnlyUseLogin={true} />
+          ) : (
+            <RenderContent />
+          )}
         </div>
       </Content>
     </Container>
