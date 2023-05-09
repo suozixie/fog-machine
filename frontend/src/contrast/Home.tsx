@@ -9,6 +9,9 @@ import {
   Panel,
   SelectPicker,
   Button,
+  Modal,
+  Uploader,
+  Form,
 } from "rsuite";
 import ConversionIcon from "@rsuite/icons/Conversion";
 import PlusIcon from "@rsuite/icons/Plus";
@@ -37,6 +40,10 @@ function Contrast() {
   const currentPage = 1;
 
   const [isLoading, setIsLoading] = useState(true);
+
+  const [uploadDialogState, setUploadDialogState] = useState<
+    "opened" | "closed"
+  >("closed");
 
   useEffect(() => {
     const initLoginStatus = async () => {
@@ -103,7 +110,7 @@ function Contrast() {
             <IconButton
               icon={<PlusIcon />}
               onClick={() => {
-                console.log("upload");
+                setUploadDialogState("opened");
               }}
             >
               {t("snapshot-list-upload")}
@@ -158,6 +165,48 @@ function Contrast() {
           </Button>
         </div>
       ) : null}
+      <Modal
+        open={uploadDialogState != "closed"}
+        onClose={() => {
+          setUploadDialogState("closed");
+        }}
+        backdrop={"static"}
+      >
+        <Modal.Header>
+          <Modal.Title>{t("data-upload-title")}</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form>
+            <Uploader
+              action="//jsonplaceholder.typicode.com/posts/"
+              disableMultipart={true}
+              multiple={false}
+              disabled={uploadDialogState == "closed"}
+              accept=".zip"
+              draggable
+            >
+              <div
+                style={{
+                  height: 200,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <span>{t("data-upload-prompt")}</span>
+              </div>
+            </Uploader>
+
+            <Modal.Footer style={{ marginTop: "16px" }}>
+              <Form.Group>
+                <Button type="submit" appearance="primary">
+                  {t("data-form-submit")}
+                </Button>
+              </Form.Group>
+            </Modal.Footer>
+          </Form>
+        </Modal.Body>
+      </Modal>
     </div>
   );
 
@@ -197,32 +246,35 @@ function Contrast() {
   }, [currentPage, t]);
 
   return (
-    <Container>
-      <Content>
-        <div className="time-machine-body">
-          <Breadcrumb
-            style={{ marginTop: "5vh", marginBottom: "0", fontSize: "19px" }}
-          >
-            <Breadcrumb.Item
-              onClick={() => {
-                navigate("/", { replace: false });
-              }}
-              href="/"
+    <div>
+      <Container>
+        <Content>
+          <div className="time-machine-body">
+            <Breadcrumb
+              style={{ marginTop: "5vh", marginBottom: "0", fontSize: "19px" }}
             >
-              {t("home-main-title")}
-            </Breadcrumb.Item>
-            <Breadcrumb.Item active>{t("home-contrast-title")}</Breadcrumb.Item>
-          </Breadcrumb>
-
-          <Divider style={{ marginTop: "1vh" }} />
-          {loginStatus == "openLogin" ? (
-            <TimeMachineHome isOnlyUseLogin={true} />
-          ) : (
-            <RenderContent />
-          )}
-        </div>
-      </Content>
-    </Container>
+              <Breadcrumb.Item
+                onClick={() => {
+                  navigate("/", { replace: false });
+                }}
+                href="/"
+              >
+                {t("home-main-title")}
+              </Breadcrumb.Item>
+              <Breadcrumb.Item active>
+                {t("home-contrast-title")}
+              </Breadcrumb.Item>
+            </Breadcrumb>
+            <Divider style={{ marginTop: "1vh" }} />
+            {loginStatus == "openLogin" ? (
+              <TimeMachineHome isOnlyUseLogin={true} />
+            ) : (
+              <RenderContent />
+            )}
+          </div>
+        </Content>
+      </Container>
+    </div>
   );
 }
 export default Contrast;
