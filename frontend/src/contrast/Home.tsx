@@ -113,7 +113,7 @@ function Contrast() {
                 setUploadDialogState("opened");
               }}
             >
-              {t("snapshot-list-upload")}
+              {t("contrast-local-select")}
             </IconButton>
             <span>Or</span>
             {loginStatus == "loggedIn" ? (
@@ -193,7 +193,11 @@ function Contrast() {
                   justifyContent: "center",
                 }}
               >
-                <span>{t("data-upload-prompt")}</span>
+                <span>
+                  {t("data-upload-prompt")}
+                  <br />
+                  {t("contrast-local-note")}
+                </span>
               </div>
             </Uploader>
 

@@ -101,6 +101,9 @@ i18n
           "log-list-details": "Details",
           "contrast-login": "Log in to Time Machine to select a snapshot",
           "contrast-no-more-snapshots": "No More Snapshots",
+          "contrast-local-select": "LocalSelect",
+          "contrast-local-note":
+            "This tool will not upload any data to the server, and all comparisons are completed locally",
           "error-page-404-text": "Page not found (404)",
           "error-page-404-button": "Back to home",
         },
@@ -178,6 +181,9 @@ i18n
           "log-list-details": "日志",
           "contrast-login": "登录至时光机以选择快照",
           "contrast-no-more-snapshots": "未选择快照",
+          "contrast-local-select": "本地选择",
+          "contrast-local-note":
+            "本工具不会上传任何数据至服务器端,所有比对均在本地完成",
           "error-page-404-text": "页面无法找到 (404)",
           "error-page-404-button": "返回主页",
         },
