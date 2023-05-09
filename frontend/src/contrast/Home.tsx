@@ -170,15 +170,16 @@ function Contrast() {
 
         if (snapshots.length) {
           const nextSnapshotOptions = snapshots.map(
-            ({ timestamp, id, sourceKind }: Snapshot) => {
+            ({ timestamp, id, sourceKind, note }: Snapshot) => {
               const renderTime: string = moment(timestamp).format("YYYY-MM-DD");
               const renderResource: string =
                 sourceKind == "Sync"
                   ? t("snapshot-list-source-sync")
+                  : note
+                  ? note
                   : t("snapshot-list-source-upload");
-
               return {
-                label: `${renderTime}(${renderResource})`,
+                label: `${renderTime} (${renderResource})`,
                 value: id,
               };
             }
