@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 import Map from "./Map";
 import Editor from "./Editor";
 import Viewer from "./Viewer";
+import DiffViewer from "./DiffViewer";
 
 type ModeProps = {
   mapController: MapController | null;
@@ -17,6 +18,12 @@ function Mode(props: ModeProps) {
   const snapshotIdStr = new URL(window.location.href).searchParams.get(
     "viewing-snapshot"
   );
+  const leftSnapshotIdStr = new URL(window.location.href).searchParams.get(
+    "contrast-snapshot-left"
+  );
+  const rightSnapshotIdStr = new URL(window.location.href).searchParams.get(
+    "contrast-snapshot-right"
+  );
   if (snapshotIdStr) {
     const snapshotId = Number(snapshotIdStr);
     return (
@@ -24,6 +31,18 @@ function Mode(props: ModeProps) {
         mapController={props.mapController}
         setLoaded={props.setLoaded}
         initialSnapshotId={snapshotId}
+        msgboxShow={props.msgboxShow}
+      />
+    );
+  } else if (leftSnapshotIdStr && rightSnapshotIdStr) {
+    const leftSnapshotId = Number(leftSnapshotIdStr);
+    const rightSnapshotId = Number(rightSnapshotIdStr);
+    return (
+      <DiffViewer
+        mapController={props.mapController}
+        setLoaded={props.setLoaded}
+        initialLeftSnapshotId={leftSnapshotId}
+        initialRightSnapshotId={rightSnapshotId}
         msgboxShow={props.msgboxShow}
       />
     );
